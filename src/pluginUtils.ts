@@ -20,14 +20,13 @@ export const resolveProperties = <T extends object>(
   return objectWithProperties as T;
 };
 
+const getters: (keyof TextNode)[] = [
+  'characters',
+  'boundVariables',
+];
+
 const filterNodeGetters = <T extends SceneNode>(key: keyof T, node: T): boolean => {
-  return (
-    // Can only get component property definitions of a component set or non-variant component
-    !(key === 'componentPropertyDefinitions' && node.parent?.type === 'COMPONENT_SET') &&
-    // reading horizontalPadding and verticalPadding is no longer supported as left and right padding may differ
-    key !== 'horizontalPadding' &&
-    key !== 'verticalPadding'
-  );
+  return getters.includes(key as keyof SceneNode);
 };
 
 const resolveNodeProperties = <T extends SceneNode>(node: T): T => {
