@@ -1,0 +1,30 @@
+{
+  "name": "Text Codegen",
+  "id": "1319646020903829098",
+  "api": "1.0.0",
+  "main": "dist/plugin.js",
+  "capabilities": [
+    "codegen"
+  ],
+  "enableProposedApi": false,
+  "editorType": [
+    "dev"
+  ],
+  "codegenLanguages": [{ "label": "JSON", "value": "json" }],
+  "codegenPreferences": [
+    {
+      "itemType": "select",
+      "propertyName": "includeName",
+      "label": "Include variable names",
+      "options": [
+        { "label": "True", "value": "true", "isDefault": true },
+        { "label": "False", "value": "false" }
+      ]
+    }
+  ],
+  "networkAccess": {
+    "allowedDomains": [
+      "none"
+    ]
+  }
+}

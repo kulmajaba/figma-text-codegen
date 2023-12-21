@@ -1,0 +1,33 @@
+{
+  "name": "figma-text-codegen",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run build:main:dev",
+    "build": "rm -rf dist/* && npm run build:main:prod",
+    "build:main": "./node_modules/.bin/vite build --config=vite.config.js --emptyOutDir=false",
+    "build:main:prod": "npm run build:main",
+    "build:main:dev": "npm run build:main -- --mode development --minify=false --watch",
+    "tsc": "tsc --noEmit -p .",
+    "lint": "eslint ."
+  },
+  "author": "Mika Kuitunen",
+  "license": "MIT",
+  "devDependencies": {
+    "@figma/plugin-typings": "*",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@typescript-eslint/parser": "^6.7.5",
+    "eslint": "^8.51.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "vite": "^4.4.11",
+    "vite-plugin-singlefile": "^0.13.5"
+  }
+}
