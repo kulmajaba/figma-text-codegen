@@ -7,3 +7,5 @@ export interface ExtendedTextNode extends TextNode {
 export const nodeCanHaveChildren = (node: BaseNode): node is BaseNode & ChildrenMixin => {
   return 'children' in node;
 };
+
+export type Casing = 'original' | 'camel' | 'kebab' | 'pascal' | 'snake';

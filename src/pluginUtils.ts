@@ -1,13 +1,10 @@
 import { Mutable, ExtendedTextNode, nodeCanHaveChildren } from './types';
 
-export const resolveProperties = <T extends object>(
-  object: T,
-  filterGetters?: (key: keyof T, object: T) => boolean
-): T => {
+export const resolveProperties = <T extends object>(object: T, filterGetters?: (key: keyof T) => boolean): T => {
   const descriptors = Object.getOwnPropertyDescriptors(Object.getPrototypeOf(object));
   let getters = (Object.keys(descriptors) as (keyof T)[]).filter((key) => typeof descriptors[key].get === 'function');
   if (filterGetters) {
-    getters = getters.filter((key) => filterGetters(key, object));
+    getters = getters.filter((key) => filterGetters(key));
   }
 
   const objectWithProperties: Mutable<T> = {
@@ -20,12 +17,9 @@ export const resolveProperties = <T extends object>(
   return objectWithProperties as T;
 };
 
-const getters: (keyof TextNode)[] = [
-  'characters',
-  'boundVariables',
-];
+const getters: (keyof TextNode)[] = ['characters', 'boundVariables'];
 
-const filterNodeGetters = <T extends SceneNode>(key: keyof T, node: T): boolean => {
+const filterNodeGetters = <T extends SceneNode>(key: keyof T): boolean => {
   return getters.includes(key as keyof SceneNode);
 };
 
@@ -46,4 +40,8 @@ export const getResolvedTextNodesFromNodes = (
     }
   }
   return textNodes;
+};
+
+export const replaceSlashes = (text: string): string => {
+  return text.replace(/\\/g, '\\\\').replace(/\//g, '\\/');
 };
