@@ -81,59 +81,45 @@ const codegen: (event: CodegenEvent) => Promise<CodegenResult[]> = async ({ node
       ? figma.codegen.preferences.customSettings.trailingComma === 'true'
       : false;
 
-  console.log(
-    'inlcludeName',
-    includeName,
-    'replaceSlashes',
-    replaceSlashes,
-    'casing',
-    casing,
-    'trailingComma',
-    trailingComma
-  );
-
   const result: CodegenResult[] = [];
 
   const textNodes = getResolvedTextNodesFromNodes([node]);
 
-  const promises = textNodes.map((textNode) => {
-    return new Promise<void>(async (resolve) => {
-      const boundVariableAlias = textNode.boundVariables?.characters;
+  const promises = textNodes.map(async (textNode) => {
+    const boundVariableAlias = textNode.boundVariables?.characters;
 
-      if (boundVariableAlias) {
-        const variable = await figma.variables.getVariableByIdAsync(boundVariableAlias.id);
-        if (variable) {
-          const values = variable.valuesByMode;
-          const collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
-          if (collection) {
-            const modes = collection.modes;
+    if (boundVariableAlias) {
+      const variable = await figma.variables.getVariableByIdAsync(boundVariableAlias.id);
+      if (variable) {
+        const values = variable.valuesByMode;
+        const collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
+        if (collection) {
+          const modes = collection.modes;
 
-            modes.forEach((mode) => {
-              const name = mode.name;
-              const value = values[mode.modeId];
-              const variableName = getVariableName(variable.name, replaceSlashes, casing);
-              const code = `${includeName ? `"${variableName}": ` : ''}${JSON.stringify(value)}${trailingComma ? ',' : ''}`;
+          modes.forEach((mode) => {
+            const name = mode.name;
+            const value = values[mode.modeId];
+            const variableName = getVariableName(variable.name, replaceSlashes, casing);
+            const code = `${includeName ? `"${variableName}": ` : ''}${JSON.stringify(value)}${trailingComma ? ',' : ''}`;
 
-              const resultForMode: CodegenResult = {
-                title: name,
-                language: 'JSON',
-                code
-              };
+            const resultForMode: CodegenResult = {
+              title: name,
+              language: 'JSON',
+              code
+            };
 
-              upsertCogegenResultArray(result, resultForMode);
-            });
-          }
+            upsertCogegenResultArray(result, resultForMode);
+          });
         }
-      } else {
-        const resultForNode: CodegenResult = {
-          title: unboundTextsTitle,
-          language: 'PLAINTEXT',
-          code: JSON.stringify(textNode.characters)
-        };
-        upsertCogegenResultArray(result, resultForNode);
       }
-      resolve();
-    });
+    } else {
+      const resultForNode: CodegenResult = {
+        title: unboundTextsTitle,
+        language: 'PLAINTEXT',
+        code: JSON.stringify(textNode.characters)
+      };
+      upsertCogegenResultArray(result, resultForNode);
+    }
   });
 
   await Promise.all(promises);
